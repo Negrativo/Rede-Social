@@ -32,24 +32,12 @@ public class Usuario {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getDataNascimento() {
         return dataNascimento;
-    }
-
-    public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
     }
 
     public List<String> getSeguidores() {
@@ -64,41 +52,54 @@ public class Usuario {
         return comentarios;
     }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
     public void seguirUsuario(Usuario usuario) {
-        usuario.getSeguidores().add(this.login);
+        if (!seguidores.contains(usuario.getLogin())) {
+            seguidores.add(usuario.getLogin());
+            System.out.println("Agora você está seguindo " + usuario.getNome() + ".");
+        } else {
+            System.out.println("Você já está seguindo " + usuario.getNome() + ".");
+        }
     }
 
     public void cancelarSeguirUsuario(Usuario usuario) {
-        usuario.getSeguidores().remove(this.login);
+        if (seguidores.contains(usuario.getLogin())) {
+            seguidores.remove(usuario.getLogin());
+            System.out.println("Você deixou de seguir " + usuario.getNome() + ".");
+        } else {
+            System.out.println("Você não está seguindo " + usuario.getNome() + ".");
+        }
     }
 
     public void registrarMensagem(String mensagem) {
         if (mensagem.length() <= 140) {
             mensagens.add(mensagem);
+            System.out.println("Mensagem registrada com sucesso!");
         } else {
             System.out.println("A mensagem excede o limite de 140 caracteres.");
         }
     }
 
     public void comentarMensagem(int numeroMensagem, String comentario) {
-        if (mensagens.size() >= numeroMensagem) {
-            List<String> comentariosMensagem = comentarios.getOrDefault(numeroMensagem, new ArrayList<>());
-            comentariosMensagem.add(comentario);
-            comentarios.put(numeroMensagem, comentariosMensagem);
+        if (mensagens.size() > numeroMensagem) {
+            if (comentario.length() <= 140) {
+                List<String> comentariosMensagem = comentarios.getOrDefault(numeroMensagem, new ArrayList<>());
+                comentariosMensagem.add(comentario);
+                comentarios.put(numeroMensagem, comentariosMensagem);
+                System.out.println("Comentário registrado com sucesso!");
+            } else {
+                System.out.println("O comentário excede o limite de 140 caracteres.");
+            }
         } else {
             System.out.println("Mensagem não encontrada.");
         }
     }
 
-    public void excluirUsuario(Map<String, Usuario> usuarios) {
-        for (Usuario seguidor : usuarios.values()) {
-            seguidor.getSeguidores().remove(this.login);
-        }
-        usuarios.remove(this.login);
-    }
-
     @Override
     public String toString() {
-        return "Usuário: " + login + " - Nome: " + nome;
+        return "Login: " + login + "\nNome: " + nome;
     }
 }
